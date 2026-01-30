@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Models Info</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Machine Learning Models for Spam Classification</h1>
+
+    <section>
+        <h2>1. Naive Bayes</h2>
+        <p><b>Definition:</b> Probabilistic classifier based on Bayes theorem with strong independence assumptions.</p>
+        <p><b>How it works:</b> Calculates the probability of a message being spam/ham based on feature likelihoods.</p>
+        <p><b>Mathematical:</b> P(Class|Features) ∝ P(Class) * Π P(Feature|Class)</p>
+        <p><b>Best for:</b> Text classification, works well with high-dimensional sparse data.</p>
+        <p><b>Example:</b> "Win a free iPhone" → High probability of spam</p>
+    </section>
+
+    <section>
+        <h2>2. Logistic Regression</h2>
+        <p><b>Definition:</b> Linear model that predicts probability of a binary outcome using sigmoid function.</p>
+        <p><b>How it works:</b> Computes weighted sum of features → applies sigmoid → outputs probability.</p>
+        <p><b>Mathematical:</b> P(y=1|x) = 1 / (1 + e^-(w·x + b))</p>
+        <p><b>Best for:</b> Linearly separable problems, interpretable coefficients.</p>
+        <p><b>Example:</b> "Meeting at 5 pm" → Likely ham</p>
+    </section>
+
+    <section>
+        <h2>3. Random Forest</h2>
+        <p><b>Definition:</b> Ensemble of decision trees using bagging and majority voting.</p>
+        <p><b>How it works:</b> Multiple trees are trained on random subsets → predictions aggregated.</p>
+        <p><b>Mathematical:</b> Majority vote: y = mode(T1(x), T2(x), ..., Tn(x))</p>
+        <p><b>Best for:</b> Non-linear patterns, robust to overfitting, can handle high-dimensional data.</p>
+        <p><b>Example:</b> "Special discount, call now!" → Likely spam</p>
+    </section>
+
+    <section>
+        <h2>4. Gradient Boosting</h2>
+        <p><b>Definition:</b> Ensemble of weak learners (trees) built sequentially to correct previous errors.</p>
+        <p><b>How it works:</b> Each new tree minimizes residual errors of previous ensemble → weighted sum of trees.</p>
+        <p><b>Mathematical:</b> F_m(x) = F_{m-1}(x) + learning_rate * h_m(x)</p>
+        <p><b>Best for:</b> High accuracy, complex datasets, sensitive to overfitting if not tuned.</p>
+        <p><b>Example:</b> "Congratulations! Claim your prize" → Likely spam</p>
+    </section>
+
+    <section>
+        <h2>Comparison of Models</h2>
+        <table border="1">
+            <tr>
+                <th>Model</th><th>Strengths</th><th>Weaknesses</th><th>Where to Use</th><th>Best Use Case Examples</th>
+            </tr>
+            <tr>
+                <td>Naive Bayes</td>
+                <td>Simple, fast, works well with text</td>
+                <td>Assumes feature independence</td>
+                <td>High-dimensional text classification</td>
+                <td>
+                    <ul>
+                        <li>Email spam detection</li>
+                        <li>SMS spam filtering</li>
+                        <li>Text classification (e.g., sentiment)</li>
+                        <li>Document categorization</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Logistic Regression</td>
+                <td>Interpretable, linear decision boundary</td>
+                <td>Struggles with non-linear patterns</td>
+                <td>Linearly separable classification</td>
+                <td>
+                    <ul>
+                        <li>Email spam detection (text features carefully selected)</li>
+                        <li>Customer churn prediction</li>
+                        <li>Binary sentiment analysis</li>
+                        <li>Medical diagnosis (binary outcome)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Random Forest</td>
+                <td>Non-linear, robust, feature importance</td>
+                <td>Slower, larger memory</td>
+                <td>Complex patterns with mixed features</td>
+                <td>
+                    <ul>
+                        <li>Spam detection with mixed features</li>
+                        <li>Fraud detection in transactions</li>
+                        <li>Predicting customer behavior</li>
+                        <li>Dataset with categorical and numeric features</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Gradient Boosting</td>
+                <td>High accuracy, sequential learning</td>
+                <td>Can overfit, sensitive to noise</td>
+                <td>Complex datasets needing precise classification</td>
+                <td>
+                    <ul>
+                        <li>Spam detection in large email datasets</li>
+                        <li>Credit scoring</li>
+                        <li>Customer segmentation</li>
+                        <li>Predictive modeling in competitions (e.g., Kaggle)</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <p><a href="/">Go Back to Spam Classifier</a></p>
+</body>
+</html>

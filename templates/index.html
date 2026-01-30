@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Classificator</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>SPAM CLASSIFICATION</h1>
+    <div id="spam">
+        
+        
+        <div id="message-box">
+         <input id="msg"  type ="text" placeholder="Type your message here..." >
+        </div>
+        <div id="container">
+            <label>Choose Model ::</label>
+            <select id="models">
+                <option value="count-naive-bayes">Count Vectorizer - Naive Bayes</option>
+                <option value="tfidf-naive-bayes">TF-IDF - Naive Bayes</option>
+                <option value="count-logistic-regression">Count Vectorizer - Logistic Regression</option>
+                <option value="tfidf-logistic-regression">TF-IDF - Logistic Regression</option>
+                <option value="count-random-forest">Count Vectorizer - Random Forest</option>
+                <option value="tfidf-random-forest">TF-IDF - Random Forest</option>
+                <option value="count-gradient-boost">Count Vectorizer - Gradient Boost</option>
+                <option value="tfidf-gradient-boost">TF-IDF - Gradient Boost</option>
+            </select>
+            
+        </div>  
+        <button class="btn">Scan</button>
+        <p id="info"><a href="/models-info">Learn About All Models</a></p>
+        
+        <div id="output-box"></div>
+
+
+        <div id="cm-box">
+          <h2>Confusion Matrix</h2>
+          <div class="cm-grid">
+            <div class="cell header"></div>
+            <div class="cell header">Pred Ham</div>
+            <div class="cell header">Pred Spam</div>
+
+            <div class="cell header">Actual Ham</div>
+            <div class="cell ham" id="cm-00"></div>
+            <div class="cell warn" id="cm-01"></div>
+
+            <div class="cell header">Actual Spam</div>
+            <div class="cell warn" id="cm-10"></div>
+            <div class="cell spam" id="cm-11"></div>
+          </div>
+        </div>
+        
+
+    </div>
+    <script src="/static/app.js"></script>
+</body>
+</html>
