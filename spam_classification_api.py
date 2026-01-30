@@ -13,6 +13,22 @@ import joblib
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+import numpy as np
+import re
+
+
+
+def preprocess(text):
+    """
+    Preprocess input text exactly like during training:
+    - lowercase
+    - remove punctuation
+    """
+    text = text.lower()
+    text = re.sub(r'[^\w\s\d]', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()  # optional: remove extra spaces
+    return text
+
 
 # ================================
 # Load models at startup
@@ -31,21 +47,26 @@ vectorizers = {
     "count": joblib.load("vectorizers/count.pkl"),
     "tfidf": joblib.load("vectorizers/tfidf.pkl"),
 }
+test_data = {
+    "X_test": joblib.load("test_data/X_test.pkl"),
+    "y_test": joblib.load("test_data/y_test.pkl")
 
+}
+from sklearn.metrics import confusion_matrix
 # ================================
 # FastAPI App
 # ================================
 app = FastAPI(title="Spam Classification")
- #Serve static files
-#app.mount("/static", StaticFiles(directory="static"), name="static")
+#Serve static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Set up templates
-#templates = Jinja2Templates(directory="templates")
+#Set up templates
+templates = Jinja2Templates(directory="templates")
 
-# Root endpoint renders index.html template
-#@app.get("/")
-#def read_root(request: Request):
- #   return templates.TemplateResponse("index.html", {"request": request})
+#Root endpoint renders index.html template
+@app.get("/")
+def read_root(request: Request):
+   return templates.TemplateResponse("index.html", {"request": request})
 # ---- CORS ----
 app.add_middleware(
     CORSMiddleware,
@@ -84,21 +105,23 @@ def predict(request: SpamRequest):
     else:
         vect = vectorizers["tfidf"]
 
-    X = vect.transform([request.message])
+    clean_msg = preprocess(request.message)
+    X = vect.transform([clean_msg])
+
     prediction = mod.predict(X)[0]
 
-    response = {
-        "model": model_name,
+   
+    X_test_vec = vect.transform(test_data["X_test"])
+    y_pred_test = mod.predict(X_test_vec)
 
-        "prediction": "Spam" if prediction == 1 else "Ham"
-    }
-
-    if hasattr(mod, "predict_proba"):
-        response["spam_probability"] = round(
-            float(mod.predict_proba(X)[0][1]), 4
-        )
-
-    return response
+    cm = confusion_matrix(test_data["y_test"], y_pred_test)
+    return{
+    "model": model_name,
+    "prediction": "Spam" if prediction == 1 else "Ham",
+    "spam_probability": round(float(mod.predict_proba(X)[0][1]), 4),
+    "confusion_matrix": cm.tolist()
+}
+    
 
 
 # ================================
@@ -107,7 +130,13 @@ def predict(request: SpamRequest):
 @app.get("/models")
 def list_models():
     return {"available_models": list(models.keys())}
-
+#================================
+# GO TO INFO.HTML PAGE
+#==============================
+@app.get("/models-info") 
+def models_info(request :Request):
+    return templates.TemplateResponse("models-info.html",{"request": request})
+     
 
 # ================================
 # Health Check
