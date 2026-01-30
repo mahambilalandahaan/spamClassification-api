@@ -10,18 +10,13 @@ Original file is located at
 
 
 #TRAIN/TEST SPLIT# LOAD DATASET USING URL
-from urllib.request import urlretrieve
-import zipfile
+
 import os
 import pandas as pd
 import json
 import joblib
-URL="https://archive.ics.uci.edu/ml/machine-learning-databases/00228/smsspamcollection.zip"
-urlretrieve(URL,"smsspamcollection.zip")
-zip_ref=zipfile.ZipFile("smsspamcollection.zip","r")
-zip_ref.extractall()
-zip_ref.close()
-os.remove("smsspamcollection.zip")
+import numpy as np
+
 
 #LOAD INTO DATAFRAME
 txt=pd.read_csv("SMSSpamCollection",sep="\t",header=None,names=["label","message"])
@@ -34,15 +29,20 @@ txt["label"]=txt["label"].map({"ham":0,"spam":1})
 
 #STANDARDIZING TEXT
 import string
-txt['message']=txt['message'].str.lower().str.replace(r'[^\w\s]'," ", regex=True)
+txt['message']=txt['message'].str.lower().str.replace(r'[^\w\s\d]'," ", regex=True)
 from sklearn.model_selection import train_test_split
 X_train,X_test,y_train,y_test=train_test_split(txt["message"],txt["label"],test_size=0.2,random_state=42)
 
+#SAVE TEST MODELS:
+os.makedirs("test_data",exist_ok=True)
+joblib.dump(X_test,"test_data/X_test.pkl")
+joblib.dump(y_test,"test_data/y_test.pkl")
+print("test_data saved X_test and y_test")
 #DEFINE VECTORIZER:
 from sklearn.feature_extraction.text import CountVectorizer , TfidfVectorizer
 vect ={
-    "count":CountVectorizer(stop_words='english',max_features=2000, ngram_range=(1,2)),
-    "tfidf":TfidfVectorizer(stop_words='english',max_features=2000,ngram_range=(1,2))
+    "count":CountVectorizer(stop_words='english',max_features=5000, ngram_range=(1,2)),
+    "tfidf":TfidfVectorizer(stop_words='english',max_features=5000,ngram_range=(1,2))
 }
 #DEFINE MODELS:
 from sklearn.naive_bayes import MultinomialNB
@@ -50,7 +50,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier , GradientBoostingClassifier
 mod={
     "nb":MultinomialNB(),
-    "lr":LogisticRegression(max_iter=2000, solver ='saga',C=1.0,random_state=42),
+    "lr":LogisticRegression(max_iter=5000, solver ='liblinear',C=5.0,random_state=42,class_weight="balanced"),
     "rf":RandomForestClassifier( n_estimators=200,
           max_depth=3,
           random_state=42),
